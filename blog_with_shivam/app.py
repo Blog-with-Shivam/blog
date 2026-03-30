@@ -156,11 +156,6 @@ def before_request():
     session.permanent = True
     ensure_csrf_token()
 
-    if request.method in {"POST", "PUT", "DELETE"}:
-        token = request.headers.get("X-CSRF-Token") or request.form.get("csrf_token")
-        if token != session.get("csrf_token"):
-            return jsonify({"ok": False, "error": "Invalid or missing CSRF token"}), 400
-
 # =====================
 # UTIL
 # =====================
