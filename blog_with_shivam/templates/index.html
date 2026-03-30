@@ -62,9 +62,11 @@
             <span class="tag">#{{ tag }}</span>
           {% endfor %}
         </div>
-        <div class="post-content">
-          {{ post.content_html|safe }}
-        </div>
+       <h2>
+         <a href="/post/{{ post.id }}">{{ post.title }}</a>
+       </h2>
+
+        <p>{{ post.content_html[:150] }}...</p>
 
         {% if post.youtube_embed_url %}
         <div class="media-block">
