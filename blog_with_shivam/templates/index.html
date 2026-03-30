@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="{{ csrf_token }}">
+  <title>Blog with Shivam | Cybersecurity Blog</title>
+  <meta name="description" content="A secure, modern cybersecurity blog by Shivam. Read posts, explore files, and watch embedded videos.">
+  <meta name="robots" content="index,follow">
+  <meta name="theme-color" content="#07111f">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="site-body">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">B</div>
+      <div>
+        <div class="brand-title">Blog with Shivam</div>
+        <div class="brand-subtitle">Cybersecurity insights, tools, and notes</div>
+      </div>
+    </div>
+    <nav class="topbar-links">
+      <a href="{{ url_for('admin_page') }}" class="ghost-link">Admin</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="hero card">
+      <div>
+        <p class="eyebrow">Security-first blogging platform</p>
+        <h1>Clean cybersecurity publishing, built to stay stable under real use.</h1>
+        <p class="hero-copy">Only the admin can publish. Visitors can read, search, filter, and open attachments without touching the control panel.</p>
+      </div>
+      <form class="filter-bar" method="get" action="{{ url_for('index') }}">
+        <input type="search" name="q" placeholder="Search posts" value="{{ search_query }}">
+        <select name="category">
+          <option value="">All categories</option>
+          {% for category in categories %}
+            <option value="{{ category }}" {% if active_category == category %}selected{% endif %}>{{ category }}</option>
+          {% endfor %}
+        </select>
+        <select name="tag">
+          <option value="">All tags</option>
+          {% for tag in tags %}
+            <option value="{{ tag }}" {% if active_tag == tag %}selected{% endif %}>{{ tag }}</option>
+          {% endfor %}
+        </select>
+        <button type="submit" class="btn-primary">Filter</button>
+      </form>
+    </section>
+
+    <section class="post-grid">
+      {% for post in posts %}
+      <article class="post-card card">
+        <div class="post-meta">
+          <span class="pill">{{ post.category }}</span>
+          <span class="date">{{ post.created_at.strftime('%d %b %Y') }}</span>
+        </div>
+        <h2>{{ post.title }}</h2>
+        <div class="tag-row">
+          {% for tag in post.tag_list %}
+            <span class="tag">#{{ tag }}</span>
+          {% endfor %}
+        </div>
+        <div class="post-content">
+          {{ post.content_html|safe }}
+        </div>
+
+        {% if post.youtube_embed_url %}
+        <div class="media-block">
+          <iframe
+            title="YouTube video for {{ post.title }}"
+            src="{{ post.youtube_embed_url }}"
+            loading="lazy"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen></iframe>
+        </div>
+        {% endif %}
+
+        {% if post.attachment_path %}
+        <div class="media-block">
+          {% if post.attachment_mime and post.attachment_mime.startswith('image/') %}
+            <img src="{{ url_for('uploaded_file', filename=post.attachment_path) }}" alt="{{ post.attachment_name }}">
+          {% elif post.attachment_mime == 'application/pdf' %}
+            <div class="file-box">
+              <div class="file-title">PDF Attachment</div>
+              <a class="btn-secondary" href="{{ url_for('uploaded_file', filename=post.attachment_path) }}" target="_blank" rel="noopener">Open PDF</a>
+            </div>
+          {% elif post.attachment_mime and post.attachment_mime.startswith('video/') %}
+            <video controls preload="metadata">
+              <source src="{{ url_for('uploaded_file', filename=post.attachment_path) }}" type="{{ post.attachment_mime }}">
+            </video>
+          {% else %}
+            <a class="btn-secondary" href="{{ url_for('uploaded_file', filename=post.attachment_path) }}" target="_blank" rel="noopener">Download file</a>
+          {% endif %}
+        </div>
+        {% endif %}
+      </article>
+      {% else %}
+      <div class="empty-state card">
+        <h2>No posts yet</h2>
+        <p>The admin dashboard is empty right now.</p>
+      </div>
+      {% endfor %}
+    </section>
+
+    <nav class="pagination card" aria-label="Pagination">
+      <div class="pagination-info">Page {{ pagination.page }} of {{ pagination.pages or 1 }} · {{ pagination.total }} posts</div>
+      <div class="pagination-links">
+        {% if pagination.has_prev %}
+          <a href="{{ url_for('index', page=pagination.prev_num, q=search_query, category=active_category, tag=active_tag) }}" class="btn-secondary">Prev</a>
+        {% endif %}
+        {% if pagination.has_next %}
+          <a href="{{ url_for('index', page=pagination.next_num, q=search_query, category=active_category, tag=active_tag) }}" class="btn-secondary">Next</a>
+        {% endif %}
+      </div>
+    </nav>
+  </main>
+
+  <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+</body>
+</html>

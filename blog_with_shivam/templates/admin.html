@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="{{ csrf_token }}">
+  <title>Admin Dashboard | Blog with Shivam</title>
+  <meta name="description" content="Admin control panel for Blog with Shivam.">
+  <meta name="theme-color" content="#07111f">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="site-body {{ 'logged-in' if logged_in else 'logged-out' }}" data-logged-in="{{ '1' if logged_in else '0' }}" data-admin-username="{{ admin_username }}">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">A</div>
+      <div>
+        <div class="brand-title">Admin Dashboard</div>
+        <div class="brand-subtitle">Blog with Shivam</div>
+      </div>
+    </div>
+    <nav class="topbar-links">
+      <a href="{{ url_for('index') }}" class="ghost-link">View site</a>
+      <button class="ghost-link button-link" id="logoutBtn" type="button">Logout</button>
+    </nav>
+  </header>
+
+  <main class="container admin-layout">
+    <section class="card auth-panel" id="loginPanel">
+      <h1>Admin Login</h1>
+      <p>Only the admin account can publish, edit, and delete content.</p>
+      <form id="loginForm" class="form-grid">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <label>
+          <span>Username</span>
+          <input type="text" name="username" autocomplete="username" required>
+        </label>
+        <label>
+          <span>Password</span>
+          <input type="password" name="password" autocomplete="current-password" required>
+        </label>
+        <button class="btn-primary" type="submit">Login</button>
+      </form>
+      <div class="notice" id="loginNotice"></div>
+    </section>
+
+    <section class="dashboard-shell" id="dashboardShell">
+      <section class="card stats-row">
+        <div class="stat">
+          <div class="stat-label">Signed in as</div>
+          <div class="stat-value" id="adminName">{{ admin_username }}</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Total posts</div>
+          <div class="stat-value" id="totalPosts">0</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Status</div>
+          <div class="stat-value ok">Online</div>
+        </div>
+      </section>
+
+      <section class="card editor-card">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Post editor</p>
+            <h2 id="editorTitle">Create new post</h2>
+          </div>
+          <button type="button" class="btn-secondary" id="resetEditorBtn">Reset</button>
+        </div>
+
+        <form id="postForm" class="editor-grid" enctype="multipart/form-data">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+          <input type="hidden" name="post_id" id="postId" value="">
+          <label class="full">
+            <span>Title</span>
+            <input type="text" name="title" id="title" maxlength="220" required>
+          </label>
+
+          <label>
+            <span>Category</span>
+            <input type="text" name="category" id="category" placeholder="e.g. Threat Intelligence" maxlength="120">
+          </label>
+
+          <label>
+            <span>Tags</span>
+            <input type="text" name="tags" id="tags" placeholder="one, two, three">
+          </label>
+
+          <label class="full">
+            <span>Content (Markdown)</span>
+            <textarea name="content" id="content" rows="12" placeholder="# Markdown supported" required></textarea>
+          </label>
+
+          <label class="full">
+            <span>YouTube URL</span>
+            <input type="url" name="youtube_url" id="youtube_url" placeholder="https://www.youtube.com/watch?v=...">
+          </label>
+
+          <label class="full">
+            <span>Attachment (png, jpg, pdf, mp4)</span>
+            <input type="file" name="attachment" id="attachment" accept=".png,.jpg,.jpeg,.pdf,.mp4">
+          </label>
+
+          <div class="editor-actions full">
+            <button type="submit" class="btn-primary" id="savePostBtn">Publish post</button>
+          </div>
+        </form>
+        <div class="notice" id="formNotice"></div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Content library</p>
+            <h2>All posts</h2>
+          </div>
+          <button class="btn-secondary" id="refreshBtn" type="button">Refresh</button>
+        </div>
+        <div class="admin-search">
+          <input type="search" id="adminSearch" placeholder="Search in admin list">
+        </div>
+        <div id="postList" class="admin-list"></div>
+      </section>
+    </section>
+  </main>
+
+  <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+</body>
+</html>
