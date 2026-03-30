@@ -182,6 +182,42 @@ def sanitize_markdown(text):
 # =====================
 # ROUTES
 # =====================
+
+@app.route("/api/change-admin", methods=["POST"])
+def change_admin():
+    if not session.get("admin_id"):
+        return jsonify({"ok": False}), 401
+
+    admin = Admin.query.get(session["admin_id"])
+
+    admin.username = request.form.get("username")
+    admin.password_hash = generate_password_hash(request.form.get("password"))
+
+    db.session.commit()
+
+    return jsonify({"ok": True})
+
+
+@app.route("/api/posts/<int:id>", methods=["DELETE"])
+def delete_post(id):
+    if not session.get("admin_id"):
+        return jsonify({"ok": False}), 401
+
+    post = Post.query.get_or_404(id)
+    db.session.delete(post)
+    db.session.commit()
+
+    return jsonify({"ok": True})
+
+
+@app.route("/post/<int:id>")
+def view_post(id):
+    post = Post.query.get_or_404(id)
+    return render_template("post.html", post=post)
+
+
+
+
 @app.route("/api/change-password", methods=["POST"])
 def change_password():
     if not session.get("admin_id"):
