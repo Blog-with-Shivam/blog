@@ -182,6 +182,20 @@ def sanitize_markdown(text):
 # =====================
 # ROUTES
 # =====================
+@app.route("/api/change-password", methods=["POST"])
+def change_password():
+    if not session.get("admin_id"):
+        return jsonify({"ok": False}), 401
+
+    new_password = request.form.get("password")
+
+    admin = Admin.query.get(session["admin_id"])
+    admin.password_hash = generate_password_hash(new_password)
+
+    db.session.commit()
+
+    return jsonify({"ok": True})
+    
 @app.route("/")
 def index():
     q = (request.args.get("q") or "").strip()
