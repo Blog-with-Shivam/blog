@@ -1,41 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
     <title>{{ post.title }}</title>
-
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-
-    <style>
-        .post-container {
-            max-width: 900px;
-            margin: 50px auto;
-            padding: 20px;
-        }
-
-        .post-title {
-            font-size: 32px;
-            margin-bottom: 20px;
-        }
-
-        .post-content {
-            font-size: 18px;
-            line-height: 1.7;
-        }
-    </style>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
+<body style="background:#0f172a; color:white; font-family:sans-serif; padding:40px;">
 
-<body>
+    <h1>{{ post.title }}</h1>
 
-<div class="post-container">
-
-    <h1 class="post-title">{{ post.title }}</h1>
-
-    <div class="post-content">
-        {{ post.content_html | safe }}
+    <div style="margin-top:20px; line-height:1.6;">
+        {{ post.content_html|safe }}
     </div>
 
-</div>
+    <br>
+    <a href="/" style="color:cyan;">⬅ Back to Home</a>
 
 </body>
 </html>
+
+<script src="/static/script.js"></script>

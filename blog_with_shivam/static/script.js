@@ -173,3 +173,15 @@ function attachDeleteHandlers() {
 window.addEventListener("DOMContentLoaded", () => {
     loadPosts();
 });
+
+const backgrounds = [
+    "linear-gradient(135deg, #0f172a, #1e293b)",
+    "linear-gradient(135deg, #1e3a8a, #9333ea)",
+    "linear-gradient(135deg, #065f46, #0ea5e9)",
+    "linear-gradient(135deg, #7c2d12, #dc2626)",
+    "linear-gradient(135deg, #111827, #4f46e5)"
+];
+
+const randomBg = backgrounds[Math.floor(Math.random() * backgrounds.length)];
+
+document.body.style.background = randomBg;
