@@ -5,3 +5,4 @@ Werkzeug==3.0.3
 bleach==6.1.0
 Markdown==3.7
 gunicorn==22.0.0
+psycopg2-binary
