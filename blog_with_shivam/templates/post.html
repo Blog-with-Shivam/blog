@@ -1,2 +1,41 @@
-<h1>{{ post.title }}</h1>
-<div>{{ post.content_html|safe }}</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ post.title }}</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .post-container {
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        .post-title {
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .post-content {
+            font-size: 18px;
+            line-height: 1.7;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="post-container">
+
+    <h1 class="post-title">{{ post.title }}</h1>
+
+    <div class="post-content">
+        {{ post.content_html | safe }}
+    </div>
+
+</div>
+
+</body>
+</html>
